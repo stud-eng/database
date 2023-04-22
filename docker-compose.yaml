@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+    db:
+      image: mysql:5.6
+      environment:
+        MYSQL_DATABASE: test
+        MYSQL_USER: test
+        MYSQL_ROOT_PASSWORD: strongrootpassword
+        MYSQL_ALLOW_EMPTY_PASSWORD: emptypassword
+        MYSQL_RANDOM_ROOT_PASSWORD: randompassword
+        MYSQL_PASSWORD: password
+      ports:
+        - "3306:3306"
+      volumes:
+        - db_volume:/var/lib/mysql:cached
+        - ./db/conf.d:/etc/mysql/conf.d
+    schemaspy:
+      container_name: schemaspy
+      image: schemaspy/schemaspy:snapshot
+      # build:
+      #     ./schemaspy
+      volumes:
+          - ./schemaspy/output:/output
+          - ./schemaspy/schemaspy.properties:/schemaspy.properties
+      depends_on:
+          - db
+      # docker-compose upするたびにドキュメント作成されるのが嫌な人は入れる
+      #entrypoint: /bin/sh
+    migrate:
+      build: ./db/migrations
+      depends_on:
+        - db
+      command: ["up"]
+      environment:
+        WAIT_HOSTS: db:3306
+        MIGRATIONS_DIR: /migrations
+        MYSQL_HOST: db
+        MYSQL_PORT: 3306
+        MYSQL_DATABASE: test
+        MYSQL_USER: test
+        MYSQL_PASSWORD: password
+      volumes:
+        - ./db/migrations/migrations:/migrations
+volumes:
+  db_volume:
+    driver: local
