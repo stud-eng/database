@@ -6,5 +6,9 @@ RUN chmod +x /wait
 
 COPY entrypoint.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY /migrations /migrations
+RUN ls
+RUN ls migrations
+RUN chmod +x /migrations
 
 ENTRYPOINT [ "entrypoint.sh" ]
