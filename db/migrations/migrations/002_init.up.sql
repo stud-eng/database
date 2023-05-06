@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS test;
 use test;
 
 CREATE TABLE tests (
@@ -5,8 +6,5 @@ CREATE TABLE tests (
     mail VARCHAR(255) UNIQUE,
     name VARCHAR(255),
     password VARCHAR(255) NOT NULL,
-    updated_at datetime,
-	created_at datetime,
-	deleted_at datetime,
     PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
